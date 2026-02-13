@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.codeoscopic.spring.polizas.polizas_seguros_application.dtos.EvaluacionSiniestroDto;
 import com.codeoscopic.spring.polizas.polizas_seguros_application.dtos.SiniestroSolicitudDto;
 import com.codeoscopic.spring.polizas.polizas_seguros_application.enums.EstadoPoliza;
 import com.codeoscopic.spring.polizas.polizas_seguros_application.enums.EstadoSiniestro;
@@ -58,7 +59,7 @@ public class SiniestroService {
     }
 
     @Transactional
-    public Siniestro evaluarSiniestro(Long siniestroId, EstadoSiniestro nuevoEstado)
+    public Siniestro evaluarSiniestro(Long siniestroId, EvaluacionSiniestroDto estadoSiniestro)
     {
         Siniestro siniestro = siniestroRepository.findById(siniestroId)
                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se ha podido encontrar un siniestro con ese ID."));
@@ -68,7 +69,9 @@ public class SiniestroService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se puede reabrir un siniestro rechazado");
         }
         
-        siniestro.setEstado(nuevoEstado);
+        siniestro.setEstado(estadoSiniestro.estado());
+        siniestro.setDescripcion(estadoSiniestro.motivo());
+
         return siniestroRepository.save(siniestro);
     }
 }
