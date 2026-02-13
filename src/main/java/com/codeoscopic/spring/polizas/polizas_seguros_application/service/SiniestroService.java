@@ -15,8 +15,10 @@ import com.codeoscopic.spring.polizas.polizas_seguros_application.repository.Pol
 import com.codeoscopic.spring.polizas.polizas_seguros_application.repository.SiniestroRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class SiniestroService {
     private final SiniestroRepository siniestroRepository;
     private final PolizaRepository polizaRepository;
@@ -30,6 +32,7 @@ public class SiniestroService {
     @Transactional
     public Siniestro declararSiniestro(Long polizaId, SiniestroSolicitudDto siniestroDto)
     {
+        log.info("Declarando siniestro en póliza {}", polizaId);
         var poliza = polizaRepository.findById(polizaId)
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Póliza no encontrada"));
         
@@ -50,17 +53,21 @@ public class SiniestroService {
         siniestro.setDescripcion(siniestroDto.descripcion());
         siniestro.setFechaSiniestro(siniestroDto.fechaSiniestro());
 
-        return siniestroRepository.save(siniestro);
+        var guardado = siniestroRepository.save(siniestro);
+        log.info("Siniestro declarado con éxito. ID: {}", guardado.getId());
+        return guardado;
     }
 
     public List<Siniestro> getSiniestrosPorPoliza(Long polizaId)
     {
+        log.info("Obteniendo siniestros de la póliza {}", polizaId);
         return siniestroRepository.findByPolizaId(polizaId);
     }
 
     @Transactional
     public Siniestro evaluarSiniestro(Long siniestroId, EvaluacionSiniestroDto estadoSiniestro)
     {
+        log.info("Evaluando siniestro {}", siniestroId);
         Siniestro siniestro = siniestroRepository.findById(siniestroId)
                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se ha podido encontrar un siniestro con ese ID."));
         
@@ -72,6 +79,8 @@ public class SiniestroService {
         siniestro.setEstado(estadoSiniestro.estado());
         siniestro.setDescripcion(estadoSiniestro.motivo());
 
-        return siniestroRepository.save(siniestro);
+        var guardado = siniestroRepository.save(siniestro);
+        log.info("Siniestro evaluado con éxito. ID: {}", guardado.getId());
+        return guardado;
     }
 }

@@ -9,6 +9,7 @@ import com.codeoscopic.spring.polizas.polizas_seguros_application.model.Siniestr
 import com.codeoscopic.spring.polizas.polizas_seguros_application.service.SiniestroService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/api/siniestros")
 public class SiniestroController {
 
@@ -33,17 +35,20 @@ public class SiniestroController {
     
     @PostMapping("/{polizaId}")
     public ResponseEntity<Siniestro> declararSiniestroEnPoliza(@PathVariable Long polizaId, @Valid @RequestBody SiniestroSolicitudDto siniestroDto) {
+        log.info("declararSiniestroEnPoliza()");
         return ResponseEntity.status(201).body(service.declararSiniestro(polizaId, siniestroDto));
     }
 
     @GetMapping("/poliza/{polizaId}")
     public ResponseEntity<List<Siniestro>> getSiniestrosPorPoliza(@PathVariable Long polizaId) {
+        log.info("getSiniestrosPorPoliza()");
         return ResponseEntity.ok(service.getSiniestrosPorPoliza(polizaId));
     }
 
     @PutMapping("/{siniestroId}/estado")
     public ResponseEntity<Siniestro> evaluarSiniestro(@PathVariable Long siniestroId, @RequestBody EvaluacionSiniestroDto estadoSiniestro)
     {
+        log.info("evaluarSiniestro()");
         return ResponseEntity.ok(service.evaluarSiniestro(siniestroId, estadoSiniestro));
     }
 

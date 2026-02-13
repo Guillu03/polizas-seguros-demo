@@ -15,11 +15,14 @@ import com.codeoscopic.spring.polizas.polizas_seguros_application.model.Poliza;
 import com.codeoscopic.spring.polizas.polizas_seguros_application.service.PolizaService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/api/polizas")
 public class PolizaController {
     private final PolizaService service;
@@ -32,23 +35,30 @@ public class PolizaController {
     @PostMapping
     public ResponseEntity<Poliza> crearPoliza(@Valid @RequestBody PolizaSolicitudDto dto)
     {
+        log.info("crearPoliza()");
         return ResponseEntity.status(201).body(service.crearPoliza(dto));
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<Poliza>> getAllPolizasByClienteId(@PathVariable Long clienteId){
+    public ResponseEntity<List<Poliza>> getAllPolizasByClienteId(@PathVariable Long clienteId)
+    {
+        log.info("getAllPolizasByClienteId()");
         return ResponseEntity.status(200).body(service.getPolizasCliente(clienteId));
     }
 
     @GetMapping("/{polizaId}")
-    public ResponseEntity<Poliza> getPolizaById(@PathVariable Long polizaId) {
+    public ResponseEntity<Poliza> getPolizaById(@PathVariable Long polizaId) 
+    {
+        log.info("getPolizaById()");
         return service.getPolizaById(polizaId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{polizaId}/estado")
-    public ResponseEntity<Void> actualizarEstadoPoliza(@PathVariable Long polizaId, @RequestBody EstadoPoliza estado) {
+    public ResponseEntity<Void> actualizarEstadoPoliza(@PathVariable Long polizaId, @RequestBody EstadoPoliza estado) 
+    {
+        log.info("actualizarEstadoPoliza()");
         service.cambiarEstadoPoliza(polizaId, estado);
         return ResponseEntity.ok().build();
     }

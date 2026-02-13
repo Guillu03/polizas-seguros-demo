@@ -14,7 +14,10 @@ import com.codeoscopic.spring.polizas.polizas_seguros_application.model.Poliza;
 import com.codeoscopic.spring.polizas.polizas_seguros_application.repository.ClienteRepository;
 import com.codeoscopic.spring.polizas.polizas_seguros_application.repository.PolizaRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class PolizaService {
     private final PolizaRepository repository;
     private final ClienteRepository clienteRepository;
@@ -27,6 +30,7 @@ public class PolizaService {
 
     public Poliza crearPoliza(PolizaSolicitudDto dto)
     {
+        log.info("Iniciando creación de póliza para el cliente ID: {}", dto.clienteId());
         Cliente cliente = clienteRepository.findById(dto.clienteId())
                         .orElseThrow(() -> new RuntimeException("El cliente con ID " + dto.clienteId() + " no existe."));
         
@@ -44,7 +48,9 @@ public class PolizaService {
         BigDecimal precioFinal = calcularPrecio(dto.caballos(), cliente.getFechaNacimiento());
         poliza.setPrecio(precioFinal);
 
-        return repository.save(poliza);
+        Poliza guardada = repository.save(poliza);
+        log.info("Póliza creada con éxito. Número: {}", guardada.getNumeroPoliza());
+        return guardada;
     }
 
     private BigDecimal calcularPrecio(Integer caballos, LocalDate fechaNacimiento)
@@ -67,16 +73,20 @@ public class PolizaService {
 
     public List<Poliza> getPolizasCliente(Long clienteId)
     {
+        log.info("Obteniendo polizas del cliente ID: {}", clienteId);
         return repository.findByClienteId(clienteId);
     }
 
     public Optional<Poliza> getPolizaById(Long polizaId)
     {
+        log.info("Obteniendo poliza por el ID: {}", polizaId);
         return repository.findById(polizaId);
     }
 
     public boolean cambiarEstadoPoliza(Long polizaId, EstadoPoliza estado)
     {
+        log.info("Cambiando el estado de la poliza {} a {}", polizaId, estado);
+
         var poliza = repository.findById(polizaId)
             .orElseThrow(() -> new RuntimeException("El ID de la poliza no se ha encontrado"));
 
@@ -86,8 +96,8 @@ public class PolizaService {
         }
 
         poliza.setEstado(estado);
-
         repository.save(poliza);
+        log.info("Poliza ID {} actualizada al estado {}", polizaId, estado);
         return true;
     }
 }
