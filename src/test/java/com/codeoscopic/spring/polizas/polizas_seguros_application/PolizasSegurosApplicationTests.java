@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -42,17 +44,20 @@ class PolizasSegurosApplicationTests {
     @Test
     void crearPoliza_DeberiaCalcularPrecioCorrecto_ParaJovenYCochePotente() {
         Long clienteId = 1L;
-        
+        // TODO: Adaptar la prueba de calcular precio correcto
         Cliente clienteJoven = new Cliente();
         clienteJoven.setId(clienteId);
         clienteJoven.setFechaNacimiento(LocalDate.now().minusYears(20));
 
         PolizaSolicitudDto dto = new PolizaSolicitudDto(
             clienteId, 
+            2L,
+            3L,
             "1234-XYZ", 
             "Ferrari", 
             200,
-            LocalDate.now()
+            LocalDate.now(),
+            new ArrayList<>()
         );
 
         when(clienteRepository.findById(clienteId)).thenReturn(Optional.of(clienteJoven));

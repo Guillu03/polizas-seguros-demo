@@ -2,6 +2,7 @@ package com.codeoscopic.spring.polizas.polizas_seguros_application.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 import com.codeoscopic.spring.polizas.polizas_seguros_application.enums.EstadoPoliza;
 
@@ -13,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
@@ -57,8 +60,23 @@ public class Poliza {
     private BigDecimal precio;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    @NotNull(message = "Una póliza debe pertenecer a un cliente")
-    private Cliente cliente;
+    @JoinColumn(name = "tomador_id", nullable = false)
+    private Cliente tomador;
+
+    @ManyToOne
+    @JoinColumn(name = "conductor_id", nullable = false)
+    private Cliente conductor;
+
+    @ManyToOne
+    @JoinColumn(name = "propietario_id", nullable = false)
+    private Cliente propietario;    
+
+    @ManyToMany
+    @JoinTable(
+        name = "poliza_coberturas",
+        joinColumns = @JoinColumn(name = "poliza_id"),
+        inverseJoinColumns = @JoinColumn(name = "cobertura_id")
+    )
+    private Set<Cobertura> coberturas;
 
 }

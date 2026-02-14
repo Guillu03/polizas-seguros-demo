@@ -9,5 +9,8 @@ import com.codeoscopic.spring.polizas.polizas_seguros_application.model.Poliza;
 
 @Repository
 public interface PolizaRepository extends JpaRepository<Poliza, Long> {
-    List<Poliza> findByClienteId(Long clienteId);
+    List<Poliza> findByTomadorId(Long tomadorId);
+    List<Poliza> findByConductorId(Long conductorId);
+    List<Poliza> findByPropietarioId(Long propietarioId);
+
 }

@@ -20,4 +20,7 @@ public class Cliente {
     private String direccion;
 
     private LocalDate fechaNacimiento;
+
+    @Embedded
+    private CarnetConducir carnetConducir;
 }
